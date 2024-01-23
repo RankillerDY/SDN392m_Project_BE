@@ -1,30 +1,13 @@
-import mongoose, { Schema, Model, Types } from 'mongoose'
-import { Quiz } from './quiz.schema'
-import { TrackCourse } from './track.schema'
+import mongoose, { Model, Schema } from 'mongoose';
+import { ICourse } from '~/types';
 
-export interface Course {
-  title: string
-  titleDescription: string
-  subTitle: string
-  subTitleDescription: string
-  tracks: Types.DocumentArray<TrackCourse>
-  enrollmentCount: number
-  is_active: boolean
-  type: string
-  amount: number
-  thumbnail: string
-  quiz: Types.DocumentArray<Quiz>
-  lecture: Types.ObjectId
-  semester_number: number
-}
-
-const courseSchema = new Schema<Course, Model<Course>>(
+const courseSchema = new Schema<ICourse, Model<ICourse>>(
   {
-    title: { type: String, required: true },
+    title: { type: String, required: true, unique: true },
     titleDescription: { type: String, required: true },
     subTitle: { type: String, default: null },
-    subTitleDescription: { type: String, default: null },
-    tracks: [{ type: Schema.Types.ObjectId, ref: 'tracks'}],
+    subTitleDescription: [{ type: String, default: null }],
+    tracks: [{ type: Schema.Types.ObjectId, ref: 'tracks' }],
     enrollmentCount: { type: Number, default: 0 },
     is_active: { type: Boolean, default: false },
     type: { type: String, required: true, default: 'free' },
@@ -40,6 +23,6 @@ const courseSchema = new Schema<Course, Model<Course>>(
       updatedAt: 'updated_at'
     }
   }
-)
+);
 
-export default mongoose.model<Course>('courses', courseSchema)
+export default mongoose.model<ICourse>('courses', courseSchema);

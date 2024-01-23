@@ -1,16 +1,9 @@
-import mongoose, { Schema, Model, Types } from 'mongoose'
+import mongoose, { Model, Schema } from 'mongoose';
+import { IQuiz } from '~/types';
 
-export interface Quiz {
-  question: string
-  type: string
-  answer: Types.Array<string>
-  rightAnswer: string
-  status: string
-}
-
-const quizSchema = new Schema<Quiz, Model<Quiz>>(
+const quizSchema = new Schema<IQuiz, Model<IQuiz>>(
   {
-    question: { type: String, required: true },
+    question: { type: String, required: true, unique: true },
     type: { type: String, default: null },
     answer: [String],
     rightAnswer: { type: String },
@@ -22,7 +15,7 @@ const quizSchema = new Schema<Quiz, Model<Quiz>>(
       updatedAt: 'updated_at'
     }
   }
-)
+);
 
-const QuizModel = mongoose.model<Quiz>('quizzes', quizSchema)
-export default QuizModel
+const QuizModel = mongoose.model<IQuiz>('quizzes', quizSchema);
+export default QuizModel;

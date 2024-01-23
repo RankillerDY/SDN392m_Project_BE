@@ -1,28 +1,11 @@
-import mongoose, { Schema, Model, Types } from 'mongoose'
+import mongoose, { Model, Schema, Types } from 'mongoose';
+import { ITrackCourse } from '~/types';
 
-interface Content {
-  title: string
-  src: string
-  position: number
-}
-
-export interface TrackCourse {
-  courseId: Types.ObjectId
-  chapterTitle: string
-  content: Types.DocumentArray<Content>
-}
-
-const trackSchema = new Schema<TrackCourse, Model<TrackCourse>>(
+const trackSchema = new Schema<ITrackCourse, Model<ITrackCourse>>(
   {
-    courseId: { type: Schema.Types.ObjectId, ref: 'courses' },
-    chapterTitle: { type: String },
-    content: [
-      {
-        title: { type: String },
-        src: { type: String },
-        position: { type: Number }
-      }
-    ]
+    position: { type: Number, required: true },
+    chapterTitle: { type: String, unique: true, required: true },
+    track_steps: [{ type: Schema.Types.ObjectId, ref: 'subtracks' }]
   },
   {
     timestamps: {
@@ -30,7 +13,7 @@ const trackSchema = new Schema<TrackCourse, Model<TrackCourse>>(
       updatedAt: 'updated_at'
     }
   }
-)
+);
 
-const Track = mongoose.model('tracks', trackSchema)
-export default Track
+const Track = mongoose.model<ITrackCourse>('tracks', trackSchema);
+export default Track;

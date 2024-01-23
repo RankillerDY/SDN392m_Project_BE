@@ -17,7 +17,7 @@ const getInfoData = ({ object = {}, fields = [] }) => {
  * @example from ['a','b']
  * @returns {a : 1, b : 1}
  */
-const getSelectData = (select = []) => {
+const getSelectData = (select: string[] = []) => {
   return Object.fromEntries(select.map((el) => [el, 1]))
 }
 

@@ -1,26 +1,7 @@
-import mongoose, { Schema, Model, Types } from 'mongoose'
+import mongoose, { Schema, Model, Types } from 'mongoose';
+import { IUser } from '~/types';
 
-interface EnrollCourse {
-  courseId?: Types.ObjectId
-  is_passed?: boolean
-}
-
-interface User {
-  email: string
-  fullName: string
-  profileName: string
-  dateOfBirth: Date
-  password: string
-  enrollCourses: Types.DocumentArray<EnrollCourse>
-  role: string
-  is_comment_blocked: boolean
-  is_blocked: boolean
-  is_chat_blocked: boolean
-  profile_image: string
-  published_at: Date
-}
-
-const userSchema = new Schema<User, Model<User>>(
+const userSchema = new Schema<IUser, Model<IUser>>(
   {
     email: {
       type: String,
@@ -51,13 +32,14 @@ const userSchema = new Schema<User, Model<User>>(
     },
     enrollCourses: [
       {
-        courseId: { type: Types.ObjectId, ref: 'courses' },
+        courseId: { type: Schema.Types.ObjectId, ref: 'courses' },
         is_passed: { type: Boolean, default: false }
       }
     ],
     role: {
       type: String,
-      default: 'user'
+      enum: ['admin', 'student', 'teacher'],
+      default: 'student'
     },
     is_comment_blocked: {
       type: Boolean,
@@ -86,6 +68,6 @@ const userSchema = new Schema<User, Model<User>>(
       updatedAt: 'updated_at'
     }
   }
-)
+);
 
-export = mongoose.model('users', userSchema)
+export = mongoose.model<IUser>('users', userSchema);

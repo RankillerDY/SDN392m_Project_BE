@@ -1,9 +1,14 @@
-import { Router } from 'express'
-import courseRouter from './course'
-import authRouter from './auth/index'
+import { Router } from 'express';
+import courseRouter from './course';
+import authRouter from './auth';
+import userRouter from './user';
+import trackRouter from './track';
 
-const router = Router()
+const router = Router();
 
-router.use('/course', courseRouter)
-router.use('/auth', authRouter)
-export { router as Routes }
+router.use('/course', courseRouter);
+router.use('/auth', authRouter);
+router.use('/user', userRouter);
+router.use('/track', trackRouter);
+
+export { router as Routes };
