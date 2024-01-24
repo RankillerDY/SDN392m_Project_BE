@@ -1,11 +1,17 @@
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 export interface IBlog extends Document {
-  user: Types.ObjectId;
+  userId: Types.ObjectId;
   title: string;
   description: string;
-  image: string;
-  comments: [{ userId: Types.ObjectId; description: string }];
+  min_read: number;
+  images: HTMLCollectionOf<HTMLImageElement>;
+  date_published: Date;
+  date_modified: Date;
+  comment_obj: Array<ObjectId>;
+  thumbnail_url: string;
+  content: string;
+  tags: Array<string>;
   status: string;
 }
 

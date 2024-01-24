@@ -12,4 +12,3 @@ UserRouter.put('/updateUserLevel/:id', asyncHandler(userController.updateUserLev
 UserRouter.put('/updateUserAdminLevel/:id', asyncHandler(userController.updateUserAdminLevel));
 
 export default UserRouter;
-//kienmundo123@gmail.com

@@ -31,5 +31,12 @@ export enum MESSAGE {
   EXPIRED_JSON_TOKEN = 'Json web token is expired, try again',
   GET_TRACKS_WITH_COURSE_ID_SUCCESS = 'Get all tracks with courseID successfully !',
   CREATED_TRACKS_SUCCESS = 'Create tracks successfully !',
-  ENROLL_COURSE_SUCCESS = 'Enroll course successfully !'
+  ENROLL_COURSE_SUCCESS = 'Enroll course successfully !',
+  
+  // BLOG MESSAGE
+  GET_ALL_BLOG_SUCCESS = 'Get all blog successfully !',
+  GET_BLOG_BY_ID_SUCCESS = 'Get blog by id successfully !',
+  CREATED_BLOG_SUCCESS = 'Create blog successfully !',
+  UPDATED_BLOG_SUCCESS = 'Update blog successfully !',
+  DELETED_BLOG_SUCCESS = 'Delete blog successfully !'
 }
