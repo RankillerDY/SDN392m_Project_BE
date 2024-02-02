@@ -110,23 +110,33 @@ export interface ITransaction extends Document {
 interface ITrackProgress {
   trackId: Types.ObjectId;
   completed: boolean;
-  subTrackProgess: [
+  subTrackProgress: [
     {
-      subtrackId: Types.ObjectId;
+      subTrackId: Types.ObjectId;
       completed: boolean;
     }
   ];
 }
-export interface IEnrollCourse {
+export interface IEnrollCourse extends Document {
   userId: Types.ObjectId;
   courseId: Types.ObjectId;
   progress: number;
   enrollDate: Date;
   completed: boolean;
   trackProgress: Types.DocumentArray<ITrackProgress>;
+  is_passed: boolean;
 }
 
-export interface IUser {
+export type IEnrollCoursePopulated = IEnrollCourse & {
+  courseId: ICourse;
+  userId: IUser;
+};
+
+export type IEnrollCourseCreate = IEnrollCourse & {
+  _id: Types.ObjectId;
+};
+
+export interface IUser extends Document {
   email: string;
   fullName: string;
   profileName: string;
@@ -139,6 +149,7 @@ export interface IUser {
   is_chat_blocked: boolean;
   profile_image: string;
   published_at: Date;
+  cart_id: Types.ObjectId;
 }
 
 export interface IVoucher extends Document {
@@ -151,4 +162,11 @@ export interface IVoucher extends Document {
   status: string;
   type: string;
   image: string;
+}
+
+export interface ICart extends Document {
+  user_id: Types.ObjectId;
+  created_at: Date;
+  items: [Types.ObjectId];
+  amount: number;
 }

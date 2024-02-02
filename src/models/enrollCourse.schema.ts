@@ -33,7 +33,7 @@ const enrollCoursesSchema = new Schema<IEnrollCourse, Model<IEnrollCourse>>(
           type: Boolean,
           default: false
         },
-        subTrackProgess: [
+        subTrackProgress: [
           {
             subTrackId: {
               type: Schema.Types.ObjectId,
@@ -46,8 +46,10 @@ const enrollCoursesSchema = new Schema<IEnrollCourse, Model<IEnrollCourse>>(
           }
         ]
       }
-    ]
+    ],
+    is_passed: { type: Boolean, default: false }
   },
+
   {
     timestamps: {
       createdAt: 'created_at',

@@ -25,7 +25,7 @@ class BlogController {
   async createBlog(req: Request, res: Response) {
     return new CREATED({
       message: MESSAGE.CREATED_BLOG_SUCCESS,
-      metadata: await BlogService.createBlog(req.body)
+      metadata: await BlogService.createBlog(req, req.body)
     }).send(res);
   }
 

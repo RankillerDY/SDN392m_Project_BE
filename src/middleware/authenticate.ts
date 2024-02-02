@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { USER_ROLE } from '~/constants';
 import { AuthFailureError } from '~/core/errorResponse.core';
 import { asyncHandler } from '~/helper/asyncHandler';
 import blogSchema from '~/models/blog.schema';
@@ -7,8 +8,9 @@ import userSchema from '~/models/user.schema';
 
 export const isAuthenticated = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   let token;
+  const secondItemIndex = 1;
   if (req.headers.authorization) {
-    token = (req.headers.authorization as string).split(' ')[1];
+    token = (req.headers.authorization as string).split(' ')[secondItemIndex];
   }
   if (!token) {
     throw new AuthFailureError('You are not logged in! Please log in to get access').getNotice();
@@ -24,10 +26,10 @@ export const isAuthenticated = asyncHandler(async (req: Request, res: Response, 
   next();
 });
 
-export const authorizeRoles = (...roles: string[]) => {
+export const authorizeRoles = (roles: USER_ROLE[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(req.user?.role || '')) {
-      throw new AuthFailureError(`Role: ${req.user?.role} is not allowed to access this resource`);
+      throw new AuthFailureError(`Role: ${req.user?.role} is not allowed to access this resource`).getNotice();
     }
     next();
   };

@@ -3,6 +3,11 @@
 export const DEFAULT_PORT = 3500;
 export const DEFAULT_BASE_METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
 export const DUPLICATE_CODE_ERROR = 11000;
+export enum USER_ROLE {
+  ADMIN = 'admin',
+  STUDENT = 'student',
+  TEACHER = 'teacher'
+}
 
 export const StatusCode = {
   OK: 200,
@@ -32,7 +37,15 @@ export enum MESSAGE {
   GET_TRACKS_WITH_COURSE_ID_SUCCESS = 'Get all tracks with courseID successfully !',
   CREATED_TRACKS_SUCCESS = 'Create tracks successfully !',
   ENROLL_COURSE_SUCCESS = 'Enroll course successfully !',
-  
+  GET_CART_BY_USER_ID_SUCCESS = 'Get cart by user id successfully !',
+  CREATED_NEW_FEED_SUCCESS = 'Create newfeed successfully!',
+  GET_NEWFEED_SUCCESS = 'Get all new feed successfully!',
+  DELETE_MANY_TRACKS_SUCCESS = 'Delete many tracks successfully !',
+  GET_COURSE_BY_ID_SUCCESS = 'Get course by id successfully !',
+  ADD_TO_CART_SUCCESS = 'Add to cart successfully !',
+  DELETE_ITEMS_FROM_CART_SUCCESS = 'Delete items from cart successfully !',
+  DELETE_TRACK_BY_ID_SUCCESS = 'Delete track by id successfully !',
+
   // BLOG MESSAGE
   GET_ALL_BLOG_SUCCESS = 'Get all blog successfully !',
   GET_BLOG_BY_ID_SUCCESS = 'Get blog by id successfully !',

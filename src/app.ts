@@ -16,9 +16,9 @@ import { NotFoundError } from './core/errorResponse.core';
 dotenv.config();
 const app: Express = express();
 
-
 //  connect mongodb
 Database.getInstance();
+
 
 app.use(
   cors({

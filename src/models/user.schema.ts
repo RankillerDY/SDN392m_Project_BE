@@ -1,4 +1,4 @@
-import mongoose, { Schema, Model, Types } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { IUser } from '~/types';
 
 const userSchema = new Schema<IUser, Model<IUser>>(
@@ -30,12 +30,7 @@ const userSchema = new Schema<IUser, Model<IUser>>(
       type: String,
       default: null
     },
-    enrollCourses: [
-      {
-        courseId: { type: Schema.Types.ObjectId, ref: 'courses' },
-        is_passed: { type: Boolean, default: false }
-      }
-    ],
+    enrollCourses: [{ type: Schema.Types.ObjectId, ref: 'enrollCourses' }],
     role: {
       type: String,
       enum: ['admin', 'student', 'teacher'],
@@ -60,6 +55,10 @@ const userSchema = new Schema<IUser, Model<IUser>>(
     published_at: {
       type: Date,
       default: new Date()
+    },
+    cart_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'carts'
     }
   },
   {

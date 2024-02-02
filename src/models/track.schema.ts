@@ -1,4 +1,4 @@
-import mongoose, { Model, Schema, Types } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { ITrackCourse } from '~/types';
 
 const trackSchema = new Schema<ITrackCourse, Model<ITrackCourse>>(

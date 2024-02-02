@@ -44,7 +44,7 @@ class CourseController {
     const courseId = req.params.id;
     try {
       const metadata = await CourseService.getCourseById(courseId);
-      const message = MESSAGE.GET_COURSE_SUCCESS;
+      const message = MESSAGE.GET_COURSE_BY_ID_SUCCESS;
       return new OK({
         message,
         metadata
@@ -55,10 +55,10 @@ class CourseController {
   }
 
   async enrollCourse(req: Request, res: Response) {
-    const { courseId, userId } = req.body;
+    const { courseId } = req.params;
     return new CREATED({
       message: MESSAGE.ENROLL_COURSE_SUCCESS,
-      metadata: await CourseService.enrollCourse(courseId, userId)
+      metadata: await CourseService.enrollCourse(req, courseId)
     }).send(res);
   }
 

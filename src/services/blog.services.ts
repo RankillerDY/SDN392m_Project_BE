@@ -1,8 +1,7 @@
-import { ClientSession, HydratedDocument, HydratedSingleSubdocument, ObjectId, Schema, Types } from 'mongoose';
-import { BadRequestError, NotFoundError, NotModified } from '~/core/errorResponse.core';
-import statusCodeCore from '~/core/statusCode.core';
+import { Request } from 'express';
+import { HydratedDocument, Types } from 'mongoose';
+import { BadRequestError, NotFoundError } from '~/core/errorResponse.core';
 import blogSchema from '~/models/blog.schema';
-import userSchema from '~/models/user.schema';
 import { IBlog } from '~/types';
 import { convertStringToObjectId, getSelectData } from '~/utils/demo';
 
@@ -47,8 +46,9 @@ class BlogService {
     }
   }
 
-  static async createBlog(blog: IBlog) {
+  static async createBlog(req: Request, blog: IBlog) {
     const newBlog = new blogSchema(blog);
+    newBlog.userId = req.user._id;
     // Khởi tạo phiên làm việc với transaction
     const session = await blogSchema.startSession();
     session.startTransaction();

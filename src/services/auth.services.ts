@@ -2,14 +2,52 @@ import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { AuthFailureError } from '~/core/errorResponse.core';
 import userSchema from '~/models/user.schema';
+import { getSelectData } from '~/utils/demo';
 
 dotenv.config();
 class AuthServices {
   static async signIn(email: string) {
-    const foundUser = await userSchema.findOne({ email });
+    const emailRegex = /^[a-zA-Z0-9._-]+@fpt\.edu\.vn$/;
+    if (!email.match(emailRegex)) {
+      throw new AuthFailureError('Invalid email format or domain. Only @fpt.edu.vn emails are allowed').getNotice();
+    }
+
+    const foundUser = await userSchema.findOne({ email }).populate({
+      path: 'enrollCourses',
+      select: getSelectData(['progress', 'completed', 'enrollDate', 'trackProgress', 'is_passed', 'courseId'])
+    });
+
     if (!foundUser) {
       throw new AuthFailureError('User not found with this email').getNotice();
     }
+
+    // const coursesPromises = foundUser.enrollCourses.map(async (enrollCourse) => {
+    //   const course = await courseSchema
+    //     .findById(enrollCourse.courseId)
+    //     .select(
+    //       getSelectData([
+    //         'title',
+    //         'titleDescription',
+    //         'subTitle',
+    //         'subTitleDescription',
+    //         'status',
+    //         'type',
+    //         'thumbnail',
+    //         'is_active'
+    //       ])
+    //     );
+
+    //   const trackProgressPromises = enrollCourse.trackProgress.map(async (track) => {
+    //     const trackInfo = await Track.findById(track.trackId);
+    //     return { ...track.toObject(), trackInfo };
+    //   });
+
+    //   const trackProgress = await Promise.all(trackProgressPromises);
+
+    //   return { ...enrollCourse.toObject(), course, trackProgress };
+    // });
+
+    // const enrollCourses = await Promise.all(coursesPromises);
 
     const token = jwt.sign(
       {
@@ -18,21 +56,27 @@ class AuthServices {
         fullName: foundUser.fullName,
         dateOfBirth: foundUser.dateOfBirth,
         profileImage: foundUser.profile_image,
-        enrolledCourses: foundUser.enrollCourses,
+        // enrolledCourses: foundUser.enrollCourses,
         role: foundUser.role,
         is_comment_blocked: foundUser.is_comment_blocked,
         is_blocked: foundUser.is_blocked,
         is_chat_blocked: foundUser.is_chat_blocked
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: '5d' }
+      { expiresIn: process.env.JWT_EXPIRE }
     );
+
     return {
       access_token: token && `Bearer ${token}`
     };
   }
 
   static async signUp(email: string, fullName: string, profileImage: string) {
+    // Check if the email matches the desired regex pattern
+    const emailRegex = /^[a-zA-Z0-9._-]+@fpt\.edu\.vn$/;
+    if (!email.match(emailRegex)) {
+      throw new AuthFailureError('Invalid email format or domain. Only @fpt.edu.vn emails are allowed').getNotice();
+    }
     const foundUser = await userSchema.findOne({ email }).select('-password');
 
     if (!foundUser) {
@@ -59,7 +103,7 @@ class AuthServices {
           createAt: newUser.published_at
         },
         process.env.JWT_SECRET as string,
-        { expiresIn: '5d' }
+        { expiresIn: process.env.JWT_EXPIRE, algorithm: 'HS512' }
       );
       return {
         access_token: token && `Bearer ${token}`

@@ -57,3 +57,8 @@
 - Ví dụ như express thì chúng ta cài như sau
   `npm i express
 npm i @types/express -D`
+
+### 🥈 Môi trường test database (MongoDB) :
+mongodb+srv://unicourse:15012024@cluster0.905oy7i.mongodb.net/unicourse_db
+### 🥈 Môi trường test POSTMAN qua URI:
+https://martian-moon-288478.postman.co/workspace/UniCourse~69126b18-7984-4a12-b895-227b879e611a/collection/27218541-246309b7-8786-4722-93d8-87df5db1bca4?action=share&creator=27218541

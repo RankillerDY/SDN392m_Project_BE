@@ -1,4 +1,5 @@
-import { ClientSession, HydratedDocument, HydratedSingleSubdocument, ObjectId, Schema, Types } from 'mongoose';
+import { Request } from 'express';
+import { ClientSession, HydratedDocument, Types } from 'mongoose';
 import { BadRequestError, NotFoundError, NotModified } from '~/core/errorResponse.core';
 import statusCodeCore from '~/core/statusCode.core';
 import courseSchema from '~/models/course.schema';
@@ -6,7 +7,7 @@ import enrollCourseSchema from '~/models/enrollCourse.schema';
 import quizSchema from '~/models/quiz.schema';
 import trackSchema from '~/models/track.schema';
 import userSchema from '~/models/user.schema';
-import { ICourse, IEnrollCourse, ISubTrack, ITrackCourse } from '~/types';
+import { ICourse, ISubTrack, ITrackCourse } from '~/types';
 import { convertStringToObjectId, getSelectData } from '~/utils/demo';
 
 type CourseCreated = ICourse & {
@@ -295,27 +296,23 @@ class CourseService {
     }
   }
 
-  static async enrollCourse(courseId: string, userId: string) {
+  static async enrollCourse(req: Request, courseId: string) {
     // find user by id to check user exist
-    const foundUser = await userSchema.findById(userId).lean();
-
-    if (!foundUser) {
-      throw new NotFoundError('User id not found!').getNotice();
-    }
+    const user = req.user;
 
     // find course by id to check course exist and get tracks
     const foundCourse = await courseSchema.findById(courseId).populate({
       path: 'tracks',
       select: getSelectData(['chapterTitle', 'track_steps', 'courseId', 'position', 'created_at'])
     });
-
+    console.log('foundCourse', foundCourse);
     if (!foundCourse) {
       throw new NotFoundError('Course id not found!').getNotice();
     }
 
     // check user already enroll course or not ?
     const foundEnrollCourse = await enrollCourseSchema.findOne({
-      userId: foundUser._id,
+      userId: user._id,
       courseId: foundCourse._id
     });
 
@@ -328,7 +325,7 @@ class CourseService {
 
     // generate trackProgress of specific course for inspecting user progress
     const trackProgress = tracks.map((track: ITrackCourseCreated) => {
-      const subTrackProgress = track.track_steps.map((subTrack: ISubTrackCourseCreated, index: number) => {
+      const subTrackProgress = track.track_steps.map((subTrack: ISubTrackCourseCreated) => {
         return {
           subTrackId: subTrack._id,
           completed: false
@@ -338,7 +335,7 @@ class CourseService {
         trackId: track._id,
         completed: false,
         // subTrackProgress : include array object with subtrackId and completed status
-        subTrackProgess: subTrackProgress
+        subTrackProgress: subTrackProgress
       };
     });
 
@@ -346,7 +343,7 @@ class CourseService {
       session.startTransaction();
       // insert enroll_course
       const newEnrollCourse = await enrollCourseSchema.create({
-        userId: foundUser._id,
+        userId: user._id,
         courseId: foundCourse._id,
         trackProgress
       });
@@ -359,7 +356,7 @@ class CourseService {
 
       // update enrollCourses in user collection
       const updatedUser = await userSchema.findByIdAndUpdate(
-        foundUser._id,
+        user._id,
         {
           $addToSet: {
             enrollCourses: newEnrollCourse._id
@@ -407,11 +404,15 @@ class CourseService {
             select: getSelectData(['name', 'email', 'avatar'])
           },
           {
+            path: 'courseId',
+            select: getSelectData(['title', 'titleDescription', 'subTitle', 'subTitleDescription', 'thumbnail'])
+          },
+          {
             path: 'trackProgress.trackId',
             select: getSelectData(['chapterTitle', 'courseId', 'position'])
           },
           {
-            path: 'trackProgress.subTrackProgess.subTrackId',
+            path: 'trackProgress.subTrackProgress.subTrackId',
             select: getSelectData(['title', 'content_url', 'position', 'duration', 'type'])
           }
         ]);
